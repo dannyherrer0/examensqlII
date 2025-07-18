@@ -1,0 +1,135 @@
+CREATE TABLE film_text (
+film_id smallint PRIMARY KEY NOT NULL AUTO_INCREMENT,
+title VARCHAR(255),
+description TEXT)ENGINE=INNODB;
+
+CREATE TABLE pais(
+id_pais smallint unsigned PRIMARY KEY NOT NULL AUTO_INCREMENT,
+nombre VARCHAR(50),
+ultima_actualizacion TIMESTAMP)ENGINE=INNODB;
+
+CREATE TABLE ciudad(
+id_ciudad smallint unsigned PRIMARY KEY NOT NULL AUTO_INCREMENT,
+nombre VARCHAR(50),
+id_pais smallint unsigned,
+FOREIGN KEY(id_pais) REFERENCES pais(id_pais),
+ultima_actualizacion TIMESTAMP)ENGINE=INNODB;
+
+CREATE TABLE direccion(
+id_direccion smallint unsigned PRIMARY KEY NOT NULL AUTO_INCREMENT,
+direccion VARCHAR(50),
+direccion2 VARCHAR(50),
+distrito VARCHAR(20),
+id_ciudad smallint unsigned,
+FOREIGN KEY (id_ciudad) REFERENCES ciudad(id_pais),
+codigo_postal VARCHAR(10),
+telefono VARCHAR(20),
+ultima_actualizacion TIMESTAMP)ENGINE=INNODB;
+
+CREATE TABLE almacen(
+id_almacen tinyint unsigned PRIMARY KEY NOT NULL AUTO_INCREMENT,
+id_empleado_jefe tinyint unsigned,
+id_direccion smallint unsigned,
+FOREIGN KEY (id_direccion) REFERENCES direccion(id_direccion),
+ultima_actualizacion TIMESTAMP)ENGINE=INNODB;
+
+CREATE TABLE empleados(
+id_empleado tinyint unsigned PRIMARY KEY NOT NULL AUTO_INCREMENT,
+nombre VARCHAR(45),
+apellidos VARCHAR(45),
+id_direccion smallint unsigned,
+FOREIGN KEY (id_direccion) REFERENCES direccion(id_direccion),
+imagen BLOB,
+email VARCHAR(50),
+id_almacen tinyint unsigned,
+FOREIGN KEY (id_almacen) REFERENCES almacen(id_almacen),
+activo tinyint(1),
+username VARCHAR(16),
+password VARCHAR(40),
+ultima_actualizacion TIMESTAMP)ENGINE=INNODB;
+
+CREATE TABLE cliente (
+id_cliente smallint unsigned PRIMARY KEY NOT NULL AUTO_INCREMENT,
+id_almacen tinyint unsigned,
+FOREIGN KEY (id_almacen) REFERENCES almacen(id_almacen),
+nombre VARCHAR(45),
+apellidos VARCHAR(45),
+email VARCHAR(50),
+id_direccion smallint unsigned,
+FOREIGN KEY (id_direccion) REFERENCES direccion(id_direccion),
+activo tinyint(1),
+fecha_creacion datetime,
+ultima_actualizacion TIMESTAMP)ENGINE=INNODB;
+
+CREATE TABLE idioma (
+id_idioma tinyint unsigned PRIMARY KEY NOT NULL AUTO_INCREMENT,
+nombre char(20),
+ultima_actualizacion TIMESTAMP)ENGINE=INNODB;
+
+CREATE TABLE pelicula(
+id_pelicula smallint unsigned PRIMARY KEY NOT NULL AUTO_INCREMENT,
+titulo VARCHAR(255),
+descripcion TEXT,
+anyo_lanzamiento year,
+id_idioma tinyint unsigned,
+FOREIGN KEY (id_idioma) REFERENCES idioma(id_idioma),
+id_idioma_original tinyint unsigned,
+duracion_alquiler tinyint unsigned,
+rental_rate decimal(4,2),
+duracion smallint unsigned,
+replacement_cost decimal(5,2),
+ultima_actualizacion TIMESTAMP)ENGINE=INNODB;
+
+CREATE TABLE inventario (
+id_inventario mediumint unsigned PRIMARY KEY NOT NULL AUTO_INCREMENT,
+id_pelicula smallint unsigned,
+FOREIGN KEY (id_pelicula) REFERENCES pelicula(id_pelicula),
+ ultima_actualizacion TIMESTAMP)ENGINE=INNODB;
+ 
+CREATE TABLE categoria (
+id_categoria tinyint unsigned PRIMARY KEY NOT NULL AUTO_INCREMENT,
+nombre VARCHAR(25),
+ultima_actualizacion timestamp)ENGINE=INNODB; 
+
+CREATE TABLE pelicula_categoria (
+id_pelicula smallint unsigned PRIMARY KEY NOT NULL AUTO_INCREMENT,
+id_categoria tinyint unsigned,
+FOREIGN KEY (id_categoria) REFERENCES categoria(id_categoria),
+ultima_actualizacion timestamp)ENGINE=INNODB; 
+
+
+CREATE TABLE alquiler (
+id_alquiler smallint unsigned PRIMARY KEY NOT NULL AUTO_INCREMENT,
+fecha_alquiler datetime,
+id_inventario mediumint unsigned,
+FOREIGN KEY (id_inventario) REFERENCES inventario(id_inventario),
+id_cliente smallint unsigned,
+FOREIGN KEY (id_cliente) REFERENCES cliente(id_cliente),
+fecha_devolucion datetime,
+id_empleado tinyint unsigned,
+FOREIGN KEY (id_empleado) REFERENCES empleados(id_empleado),
+ultima_actualizacion timestamp)ENGINE=INNODB;
+
+CREATE TABLE pago(
+id_pago smallint unsigned PRIMARY KEY NOT NULL AUTO_INCREMENT,
+id_cliente smallint unsigned,
+FOREIGN KEY (id_cliente) REFERENCES cliente(id_cliente),
+id_empleado tinyint unsigned,
+FOREIGN KEY (id_empleado) REFERENCES empleados(id_empleado),
+id_alquiler int,
+total decimal(5,2),
+fecha_pago datetime,
+ultima_actualizacion timestamp)ENGINE=INNODB;
+
+CREATE TABLE actor (
+id_actor smallint unsigned PRIMARY KEY NOT NULL AUTO_INCREMENT,
+nombre VARCHAR(45),
+apellidos VARCHAR(45),
+ultima_actualizacion timestamp)ENGINE=INNODB;
+
+CREATE TABLE pelicula_actor (
+id_actor smallint unsigned PRIMARY KEY NOT NULL AUTO_INCREMENT,
+id_pelicula smallint unsigned ,
+FOREIGN KEY (id_pelicula) REFERENCES pelicula(id_pelicula),
+ultima_actualizacion timestamp)ENGINE=INNODB; 
+
